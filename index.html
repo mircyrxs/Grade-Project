@@ -83,15 +83,9 @@
     flex: 1;
   }
   .semester-title{
-    background: transparent;
-    border: none;
     color: var(--blue);
     font-weight: 700;
     font-size: 15px;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    width: 100%;
-    max-width: 260px;
   }
   .chevron{
     width: 18px; height: 18px;
@@ -100,11 +94,6 @@
     color: var(--blue);
   }
   .semester.collapsed .chevron{ transform: rotate(-90deg); }
-  .semester-remove{
-    background:none; border:none; color: var(--muted);
-    font-size: 18px; cursor:pointer; padding: 0 4px; line-height:1;
-  }
-  .semester-remove:hover{ color: var(--red); }
 
   .semester-body{
     max-height: 3000px;
@@ -112,6 +101,12 @@
   }
   .semester.collapsed .semester-body{
     max-height: 0;
+  }
+  .empty-semester{
+    padding: 18px;
+    font-size: 13.5px;
+    color: var(--muted);
+    font-style: italic;
   }
   .unit-row{
     display:flex;
@@ -133,33 +128,14 @@
     font-size: 12.5px;
     letter-spacing: 0.02em;
   }
-  .unit-badge input{
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-weight: 700;
-    font-size: 12.5px;
-    text-align:center;
-    width: 100%;
-    outline: none;
-    font-family: 'Inter', sans-serif;
-  }
-  .unit-badge input::placeholder{ color: rgba(255,255,255,0.7); }
 
   .unit-info{ flex: 1; min-width: 0; }
-  .unit-name-input{
-    background: transparent;
-    border: none;
+  .unit-name-display{
     color: var(--blue);
     font-weight: 600;
     font-size: 14.5px;
-    width: 100%;
-    outline: none;
-    font-family: 'Inter', sans-serif;
     padding: 2px 0;
-    border-bottom: 1px solid transparent;
   }
-  .unit-name-input:focus{ border-bottom-color: var(--blue-border); }
   .unit-meta{
     display:flex;
     align-items:center;
@@ -169,18 +145,9 @@
     color: var(--ink);
   }
   .unit-meta .band-label{ font-weight: 600; }
-  .unit-meta input.score-field{
-    width: 42px;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    font-size: 13.5px;
-    color: var(--ink);
-    font-family: 'Inter', sans-serif;
-    outline:none;
-    padding: 1px 2px;
+  .unit-meta .score-display{
+    color: var(--muted);
   }
-  .unit-meta input.score-field:focus{ border-bottom-color: var(--blue); }
 
   .gp-circle{
     flex-shrink:0;
@@ -192,44 +159,6 @@
     font-size: 14px;
     border: 3px solid rgba(0,0,0,0.12);
   }
-
-  .unit-remove{
-    background:none; border:none; color: var(--muted);
-    font-size: 17px; cursor:pointer; padding: 0 2px; line-height:1; flex-shrink:0;
-  }
-  .unit-remove:hover{ color: var(--red); }
-
-  .add-unit-row{
-    padding: 10px 18px 16px;
-  }
-  .add-unit-btn{
-    background: transparent;
-    border: 1px dashed var(--border);
-    color: var(--muted);
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    padding: 8px 14px;
-    border-radius: 4px;
-    cursor:pointer;
-    width: 100%;
-    transition: all 0.15s;
-  }
-  .add-unit-btn:hover{ border-color: var(--blue); color: var(--blue); }
-
-  .add-semester-btn{
-    background: #fff;
-    border: 1px dashed var(--border);
-    color: var(--muted);
-    font-family: 'Inter', sans-serif;
-    font-size: 13.5px;
-    padding: 12px 14px;
-    border-radius: 6px;
-    cursor:pointer;
-    width: 100%;
-    margin-bottom: 32px;
-    transition: all 0.15s;
-  }
-  .add-semester-btn:hover{ border-color: var(--blue); color: var(--blue); }
 
   .gpa-footer{
     display:flex;
@@ -430,7 +359,6 @@
   <h1>Academic record</h1>
 
   <div id="semesters"></div>
-  <button class="add-semester-btn" id="addSemesterBtn">+ add semester</button>
 
   <div class="gpa-footer">
     <div class="gpa-label">GPA to date:</div>
@@ -519,6 +447,16 @@
 
   let semesters = [
     {
+      title: "Semester 1, 2025",
+      collapsed: true,
+      units: []
+    },
+    {
+      title: "Semester 2, 2025",
+      collapsed: true,
+      units: []
+    },
+    {
       title: "Semester 1, 2026",
       collapsed: false,
       units: [
@@ -540,15 +478,11 @@
         <div class="semester-head" data-toggle="${si}">
           <div class="semester-title-wrap">
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            <input class="semester-title" data-sem-title="${si}" value="${sem.title}" />
+            <span class="semester-title">${sem.title}</span>
           </div>
-          <button class="semester-remove" data-sem-remove="${si}" title="Remove semester">×</button>
         </div>
         <div class="semester-body">
-          ${sem.units.map((u, ui) => renderUnit(u, si, ui)).join('')}
-          <div class="add-unit-row">
-            <button class="add-unit-btn" data-add-unit="${si}">+ add unit</button>
-          </div>
+          ${sem.units.length ? sem.units.map((u, ui) => renderUnit(u, si, ui)).join('') : `<div class="empty-semester">No units on record yet</div>`}
         </div>
       </div>
     `).join('');
@@ -562,18 +496,15 @@
     const badgeColor = u.code ? hashColor(u.code.slice(0,3).toUpperCase()) : "#999";
     return `
       <div class="unit-row" data-si="${si}" data-ui="${ui}">
-        <div class="unit-badge" style="background:${badgeColor}">
-          <input value="${u.code}" data-code="${si}:${ui}" placeholder="CODE" maxlength="8" />
-        </div>
+        <div class="unit-badge" style="background:${badgeColor}">${u.code}</div>
         <div class="unit-info">
-          <input class="unit-name-input" value="${u.name}" data-name="${si}:${ui}" placeholder="Unit name" />
+          <div class="unit-name-display">${u.name}</div>
           <div class="unit-meta">
             <span class="band-label">${band ? band.label : "—"}</span>
-            <input type="number" class="score-field" value="${u.score}" data-score="${si}:${ui}" min="0" max="100" placeholder="—" />
+            <span class="score-display">${u.score !== "" && u.score !== null ? u.score : "—"}</span>
           </div>
         </div>
         <div class="gp-circle" style="background:${band ? band.color : '#B7BCC2'}">${band ? band.gp.toFixed(0) : "–"}</div>
-        <button class="unit-remove" data-unit-remove="${si}:${ui}" title="Remove unit">×</button>
       </div>
     `;
   }
@@ -581,80 +512,11 @@
   function attachListeners(){
     semestersEl.querySelectorAll('[data-toggle]').forEach(el => {
       el.addEventListener('click', e => {
-        if(e.target.tagName === 'INPUT' || e.target.hasAttribute('data-sem-remove')) return;
         const si = parseInt(el.getAttribute('data-toggle'));
         semesters[si].collapsed = !semesters[si].collapsed;
         render();
       });
     });
-    semestersEl.querySelectorAll('[data-sem-title]').forEach(el => {
-      el.addEventListener('click', e => e.stopPropagation());
-      el.addEventListener('input', e => {
-        const si = parseInt(el.getAttribute('data-sem-title'));
-        semesters[si].title = e.target.value;
-      });
-    });
-    semestersEl.querySelectorAll('[data-sem-remove]').forEach(el => {
-      el.addEventListener('click', e => {
-        e.stopPropagation();
-        const si = parseInt(el.getAttribute('data-sem-remove'));
-        semesters.splice(si,1);
-        render();
-      });
-    });
-    semestersEl.querySelectorAll('[data-add-unit]').forEach(el => {
-      el.addEventListener('click', e => {
-        const si = parseInt(el.getAttribute('data-add-unit'));
-        semesters[si].units.push({code:"", name:"New unit", score:""});
-        render();
-      });
-    });
-    semestersEl.querySelectorAll('[data-code]').forEach(el => {
-      el.addEventListener('click', e => e.stopPropagation());
-      el.addEventListener('input', e => {
-        const [si,ui] = el.getAttribute('data-code').split(':').map(Number);
-        semesters[si].units[ui].code = e.target.value;
-        // re-render badge color live without losing focus is tricky; just update color directly
-        const badge = el.closest('.unit-badge');
-        badge.style.background = e.target.value ? hashColor(e.target.value.slice(0,3).toUpperCase()) : "#999";
-      });
-    });
-    semestersEl.querySelectorAll('[data-name]').forEach(el => {
-      el.addEventListener('click', e => e.stopPropagation());
-      el.addEventListener('input', e => {
-        const [si,ui] = el.getAttribute('data-name').split(':').map(Number);
-        semesters[si].units[ui].name = e.target.value;
-      });
-    });
-    semestersEl.querySelectorAll('[data-score]').forEach(el => {
-      el.addEventListener('click', e => e.stopPropagation());
-      el.addEventListener('input', e => {
-        const [si,ui] = el.getAttribute('data-score').split(':').map(Number);
-        const v = e.target.value;
-        semesters[si].units[ui].score = v === "" ? "" : parseFloat(v);
-        updateRowVisuals(si,ui);
-        recalcGPA();
-      });
-    });
-    semestersEl.querySelectorAll('[data-unit-remove]').forEach(el => {
-      el.addEventListener('click', e => {
-        e.stopPropagation();
-        const [si,ui] = el.getAttribute('data-unit-remove').split(':').map(Number);
-        semesters[si].units.splice(ui,1);
-        render();
-      });
-    });
-  }
-
-  function updateRowVisuals(si,ui){
-    const row = semestersEl.querySelector(`.unit-row[data-si="${si}"][data-ui="${ui}"]`);
-    if(!row) return;
-    const u = semesters[si].units[ui];
-    const band = bandForScore(u.score);
-    row.querySelector('.band-label').textContent = band ? band.label : "—";
-    const circle = row.querySelector('.gp-circle');
-    circle.style.background = band ? band.color : '#B7BCC2';
-    circle.textContent = band ? band.gp.toFixed(0) : "–";
   }
 
   function recalcGPA(){
@@ -687,11 +549,6 @@
     document.body.removeChild(tmp);
     gpaPill.style.background = resolved;
   }
-
-  document.getElementById('addSemesterBtn').addEventListener('click', () => {
-    semesters.push({title:"New Semester", collapsed:false, units:[]});
-    render();
-  });
 
   render();
 })();
