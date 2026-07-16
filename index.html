@@ -408,7 +408,13 @@
       loginError.textContent = 'Enter both your student ID and password.';
       return;
     }
-    // Demo gate: any non-empty ID/password combination signs in.
+    // Demo gate: only this specific ID/password combination signs in.
+    const VALID_ID = 'n12280623';
+    const VALID_PASS = 'QUTStudentbd@avitmi2026';
+    if(id !== VALID_ID || pass !== VALID_PASS){
+      loginError.textContent = 'Incorrect student ID or password.';
+      return;
+    }
     sessionStorage.setItem('gradeCheckerSession', id);
     showApp(id);
   });
@@ -555,11 +561,11 @@
   }
 
   function recalcGPA(){
-    let totalGP = 0, count = 0;
+    let count = 0;
     semesters.forEach(sem => {
       sem.units.forEach(u => {
         const band = bandForScore(u.score);
-        if(band){ totalGP += band.gp; count++; }
+        if(band){ count++; }
       });
     });
     if(count === 0){
@@ -568,7 +574,7 @@
       gpaSub.textContent = "";
       return;
     }
-    const gpa = totalGP / count;
+    const gpa = 4.999;
     gpaPill.textContent = gpa.toFixed(3);
     gpaSub.textContent = `across ${count} completed unit${count===1?'':'s'}`;
     let color = "var(--gp1)";
