@@ -338,6 +338,88 @@
   }
   .logout-btn:hover{ border-color: var(--red); color: var(--red); }
 
+  .signed-in-link{
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px dashed var(--muted);
+  }
+  .signed-in-link:hover{
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+
+  /* PROFILE VIEW */
+  .profile-back-btn{
+    background: transparent;
+    border: none;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .profile-back-btn:hover{ text-decoration: underline; }
+  .profile-card{
+    display:flex;
+    align-items:center;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .profile-avatar{
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: 700;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .profile-name{
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .profile-id{
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .profile-fields{
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .profile-field-row{
+    display:flex;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #F0F1F3;
+    font-size: 14px;
+  }
+  .profile-field-row:last-child{ border-bottom: none; }
+  .profile-field-label{ color: var(--muted); }
+  .profile-field-value{ color: var(--ink); font-weight: 600; }
+  .profile-note{
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 16px;
+    font-style: italic;
+  }
+
   .maintenance-banner{
     background: #FFF3CD;
     border-bottom: 1px solid #F0D98C;
@@ -377,7 +459,7 @@
   <div class="app-topbar">
     <div class="app-topbar-left">
       <img src="logo.png" alt="Logo" class="app-logo">
-      <div class="signed-in-as">Signed in as <strong id="signedInName">—</strong></div>
+      <div class="signed-in-as">Signed in as <a href="#" id="signedInName" class="signed-in-link">—</a></div>
     </div>
     <button class="logout-btn" id="logoutBtn">Sign out</button>
   </div>
@@ -403,6 +485,55 @@
   </div>
 </div>
 
+<div class="wrap" id="profileView" style="display:none;">
+  <button class="profile-back-btn" id="profileBackBtn">← Back to academic record</button>
+
+  <div class="profile-card">
+    <div class="profile-avatar" id="profileAvatarInitials">—</div>
+    <div>
+      <div class="profile-name" id="profileFullName">—</div>
+      <div class="profile-id" id="profileStudentId">—</div>
+    </div>
+  </div>
+
+  <div class="profile-fields">
+    <div class="profile-field-row">
+      <span class="profile-field-label">Program</span>
+      <span class="profile-field-value">Bachelor Of Business (Accounting)</span>
+    </div>
+    <div class="profile-field-row">
+      <span class="profile-field-label">Student ID</span>
+      <span class="profile-field-value" id="profileFieldId">—</span>
+    </div>
+    <div class="profile-field-row">
+      <span class="profile-field-label">Email</span>
+      <span class="profile-field-value">—</span>
+    </div>
+    <div class="profile-field-row">
+      <span class="profile-field-label">Phone</span>
+      <span class="profile-field-value">—</span>
+    </div>
+    <div class="profile-field-row">
+      <span class="profile-field-label">Campus</span>
+      <span class="profile-field-value">—</span>
+    </div>
+  </div>
+
+  <div class="profile-note">This is a base profile page — more details to be added.</div>
+
+  <div class="site-footer">
+    <div class="site-footer-inner">
+      <div>QUT acknowledges the Traditional Owners of the lands where QUT now stands.</div>
+      <div class="site-footer-links">
+        <span><span style="text-decoration:underline;">TEQSA</span> Provider ID PRV12079 (Australian University)</span>
+        <span><span style="text-decoration:underline;">CRICOS</span> No. 00213J</span>
+        <span>ABN 83 791 724 622</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
 (function(){
 
@@ -411,23 +542,51 @@
   // in this browser. Swap this out for real QUT SSO before going live.
   const loginView = document.getElementById('loginView');
   const appView = document.getElementById('appView');
+  const profileView = document.getElementById('profileView');
   const loginForm = document.getElementById('loginForm');
   const loginError = document.getElementById('loginError');
   const signedInName = document.getElementById('signedInName');
   const logoutBtn = document.getElementById('logoutBtn');
+  const profileBackBtn = document.getElementById('profileBackBtn');
+  const profileFullName = document.getElementById('profileFullName');
+  const profileStudentId = document.getElementById('profileStudentId');
+  const profileFieldId = document.getElementById('profileFieldId');
+  const profileAvatarInitials = document.getElementById('profileAvatarInitials');
+
+  const STUDENT_NAME = 'MIR MERAZUL ISLAM AVITOHA';
+  let currentStudentId = null;
 
   function showApp(studentId){
+    currentStudentId = studentId;
     loginView.style.display = 'none';
+    profileView.style.display = 'none';
     appView.style.display = 'block';
-    const STUDENT_NAME = 'MIR MERAZUL ISLAM AVITOHA';
     signedInName.textContent = `${studentId} — ${STUDENT_NAME}`;
   }
   function showLogin(){
     appView.style.display = 'none';
+    profileView.style.display = 'none';
     loginView.style.display = 'flex';
     loginForm.reset();
     loginError.textContent = '';
   }
+  function showProfile(){
+    appView.style.display = 'none';
+    profileView.style.display = 'block';
+    profileFullName.textContent = STUDENT_NAME;
+    profileStudentId.textContent = currentStudentId;
+    profileFieldId.textContent = currentStudentId;
+    profileAvatarInitials.textContent = STUDENT_NAME.split(' ').map(w => w[0]).slice(0,2).join('');
+  }
+
+  signedInName.addEventListener('click', function(e){
+    e.preventDefault();
+    showProfile();
+  });
+  profileBackBtn.addEventListener('click', function(){
+    appView.style.display = 'block';
+    profileView.style.display = 'none';
+  });
 
   loginForm.addEventListener('submit', function(e){
     e.preventDefault();
