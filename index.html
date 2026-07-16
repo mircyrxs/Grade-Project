@@ -356,7 +356,7 @@
     </div>
     <button class="logout-btn" id="logoutBtn">Sign out</button>
   </div>
-  <h1>Academic record</h1>
+  <h1>Bachelor Of Business (Accounting)</h1>
 
   <div id="semesters"></div>
 
@@ -391,7 +391,8 @@
   function showApp(studentId){
     loginView.style.display = 'none';
     appView.style.display = 'block';
-    signedInName.textContent = studentId;
+    const STUDENT_NAME = 'MIR MERAZUL ISLAM AVITOHA';
+    signedInName.textContent = `${studentId} — ${STUDENT_NAME}`;
   }
   function showLogin(){
     appView.style.display = 'none';
