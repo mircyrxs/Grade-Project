@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grade Checker — Academic Record</title>
+<title>QUT GRADE CHECKER</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -187,18 +187,31 @@
     color: var(--muted);
   }
 
-  .legend{
+  .site-footer{
     margin-top: 28px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
+    border-top: 4px solid #142B49;
+    padding: 16px 4px 0;
+  }
+  .site-footer-inner{
     display:flex;
-    gap: 18px;
+    align-items:center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    font-size: 12.5px;
+    color: var(--blue);
+  }
+  .site-footer-links{
+    display:flex;
+    align-items:center;
+    gap: 20px;
     flex-wrap: wrap;
   }
-  .legend span{ display:inline-flex; align-items:center; gap:6px; }
-  .legend .dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .site-footer-links a{
+    color: var(--blue);
+    text-decoration: none;
+  }
+  .site-footer-links a span{ text-decoration: underline; }
 
   @media (max-width: 480px){
     .unit-row{ flex-wrap: wrap; }
@@ -366,12 +379,15 @@
     <div class="gpa-sub" id="gpaSub"></div>
   </div>
 
-  <div class="legend">
-    <span><span class="dot" style="background:var(--gp7)"></span>HD (7.0)</span>
-    <span><span class="dot" style="background:var(--gp6)"></span>D (6.0)</span>
-    <span><span class="dot" style="background:var(--gp5)"></span>C (5.0)</span>
-    <span><span class="dot" style="background:var(--gp4)"></span>P (4.0)</span>
-    <span><span class="dot" style="background:var(--gp1)"></span>F (1.0)</span>
+  <div class="site-footer">
+    <div class="site-footer-inner">
+      <div>QUT acknowledges the Traditional Owners of the lands where QUT now stands.</div>
+      <div class="site-footer-links">
+        <span><span style="text-decoration:underline;">TEQSA</span> Provider ID PRV12079 (Australian University)</span>
+        <span><span style="text-decoration:underline;">CRICOS</span> No. 00213J</span>
+        <span>ABN 83 791 724 622</span>
+      </div>
+    </div>
   </div>
 </div>
 
