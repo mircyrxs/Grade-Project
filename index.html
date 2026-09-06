@@ -108,6 +108,21 @@
     color: var(--muted);
     font-style: italic;
   }
+  .unit-group-label{
+    padding: 12px 18px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+  }
+  .unit-group-label.ongoing{
+    color: var(--blue);
+  }
+  .unit-group-label:not(:first-child){
+    border-top: 1px solid #F0F1F3;
+    margin-top: 4px;
+  }
   .unit-row{
     display:flex;
     align-items:center;
@@ -158,6 +173,9 @@
     font-weight:700;
     font-size: 14px;
     border: 3px solid rgba(0,0,0,0.12);
+  }
+  .gp-circle.pending{
+    border-style: dashed;
   }
 
   .gpa-footer{
@@ -741,13 +759,35 @@ QLD  4006, Australia</span>
           </div>
         </div>
         <div class="semester-body">
-          ${sem.units.length ? sem.units.map((u, ui) => renderUnit(u, si, ui)).join('') : `<div class="empty-semester">No units on record yet</div>`}
+          ${renderSemesterBody(sem.units, si)}
         </div>
       </div>
     `).join('');
 
     attachListeners();
     recalcGPA();
+  }
+
+  function renderSemesterBody(units, si){
+    if(!units.length){
+      return `<div class="empty-semester">No units on record yet</div>`;
+    }
+    // Split on whether a final score has landed yet: scored units are
+    // "already achieved", everything else is still "currently ongoing".
+    const achieved = [];
+    const ongoing = [];
+    units.forEach((u, ui) => (bandForScore(u.score) ? achieved : ongoing).push({u, ui}));
+
+    let html = '';
+    if(achieved.length){
+      html += `<div class="unit-group-label">Already achieved</div>`;
+      html += achieved.map(({u, ui}) => renderUnit(u, si, ui)).join('');
+    }
+    if(ongoing.length){
+      html += `<div class="unit-group-label ongoing">Currently ongoing</div>`;
+      html += ongoing.map(({u, ui}) => renderUnit(u, si, ui)).join('');
+    }
+    return html;
   }
 
   function renderUnit(u, si, ui){
@@ -759,11 +799,11 @@ QLD  4006, Australia</span>
         <div class="unit-info">
           <div class="unit-name-display">${u.name}</div>
           <div class="unit-meta">
-            <span class="band-label">${band ? band.label : "—"}</span>
-            <span class="score-display">${u.score !== "" && u.score !== null ? u.score : "—"}</span>
+            <span class="band-label">${band ? band.label : "In progress"}</span>
+            <span class="score-display">${u.score !== "" && u.score !== null && u.score !== undefined ? u.score : "—"}</span>
           </div>
         </div>
-        <div class="gp-circle" style="background:${band ? band.color : '#B7BCC2'}">${band ? band.gp.toFixed(0) : "–"}</div>
+        <div class="gp-circle${band ? '' : ' pending'}" style="background:${band ? band.color : '#B7BCC2'}">${band ? band.gp.toFixed(0) : "–"}</div>
       </div>
     `;
   }
