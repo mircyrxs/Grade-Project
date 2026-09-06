@@ -716,7 +716,7 @@ QLD  4006, Australia</span>
   let semesters = [
     {
       title: "Semester 1, 2026",
-      collapsed: false,
+      collapsed: true,
       units: [
         {code:"BSD131", name:"Business Analytics", score:70},
         {code:"BS05", name:"Business", score:58},
@@ -726,8 +726,13 @@ QLD  4006, Australia</span>
     },
     {
       title: "Semester 2, 2026",
-      collapsed: true,
-        units: []
+      collapsed: false,
+      units: [
+        {code:"BSB107", name:"Financial Performance And Responsibility", score:""},
+        {code:"BSB108", name:"Business Environment", score:""},
+        {code:"ANB200", name:"Marketing", score:""},
+        {code:"BSB151", name:"Business Law And Governance", score:""},
+      ]
     },
     {
       title: "Semester 1, 2027",
