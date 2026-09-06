@@ -698,10 +698,20 @@ QLD  4006, Australia</span>
     "#1B4F72","#0E6655","#7A5230","#7B241C","#3E5266"
   ];
 
-  function hashColor(str){
-    let h = 0;
-    for(let i=0;i<str.length;i++){ h = str.charCodeAt(i) + ((h<<5)-h); }
-    return badgePalette[Math.abs(h) % badgePalette.length];
+  // Each unique unit code claims the next unused palette color and keeps
+  // it for the life of the page. This avoids the old approach (hashing
+  // just the first 3 letters), which put every BSB-prefixed unit on the
+  // same color since they all share that prefix.
+  const codeColors = {};
+  let nextColorIndex = 0;
+  function colorForCode(code){
+    if(!code) return "#999";
+    const key = code.toUpperCase();
+    if(!(key in codeColors)){
+      codeColors[key] = badgePalette[nextColorIndex % badgePalette.length];
+      nextColorIndex++;
+    }
+    return codeColors[key];
   }
 
   function bandForScore(score){
@@ -806,7 +816,7 @@ QLD  4006, Australia</span>
 
   function renderUnit(u, si, ui){
     const band = bandForScore(u.score);
-    const badgeColor = u.code ? hashColor(u.code.slice(0,3).toUpperCase()) : "#999";
+    const badgeColor = colorForCode(u.code);
     return `
       <div class="unit-row" data-si="${si}" data-ui="${ui}">
         <div class="unit-badge" style="background:${badgeColor}">${u.code}</div>
