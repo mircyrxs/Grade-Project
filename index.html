@@ -123,6 +123,12 @@
     border-top: 1px solid #F0F1F3;
     margin-top: 4px;
   }
+  .empty-group{
+    padding: 6px 18px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
   .unit-row{
     display:flex;
     align-items:center;
@@ -778,16 +784,19 @@ QLD  4006, Australia</span>
     const ongoing = [];
     units.forEach((u, ui) => (bandForScore(u.score) ? achieved : ongoing).push({u, ui}));
 
-    let html = '';
-    if(achieved.length){
-      html += `<div class="unit-group-label">Already achieved</div>`;
-      html += achieved.map(({u, ui}) => renderUnit(u, si, ui)).join('');
-    }
-    if(ongoing.length){
-      html += `<div class="unit-group-label ongoing">Currently ongoing</div>`;
-      html += ongoing.map(({u, ui}) => renderUnit(u, si, ui)).join('');
-    }
-    return html;
+    const achievedHtml = achieved.length
+      ? achieved.map(({u, ui}) => renderUnit(u, si, ui)).join('')
+      : `<div class="empty-group">No completed units yet</div>`;
+    const ongoingHtml = ongoing.length
+      ? ongoing.map(({u, ui}) => renderUnit(u, si, ui)).join('')
+      : `<div class="empty-group">No units currently in progress</div>`;
+
+    return `
+      <div class="unit-group-label">Already achieved</div>
+      ${achievedHtml}
+      <div class="unit-group-label ongoing">Currently ongoing</div>
+      ${ongoingHtml}
+    `;
   }
 
   function renderUnit(u, si, ui){
